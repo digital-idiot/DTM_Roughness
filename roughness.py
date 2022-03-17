@@ -165,7 +165,7 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         '-i', '--input',
-        metavar='Input File / Directory',
+        metavar='Input file path',
         action='store',
         type=str,
         required=True,
@@ -174,7 +174,7 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         '-o', '--output',
-        metavar='Output File / Directory',
+        metavar='Output file path',
         action='store',
         type=str,
         required=True,
@@ -189,7 +189,7 @@ if __name__ == "__main__":
         required=False,
         dest='ks',
         default=(3, 3),
-        help='Specify kernel size'
+        help='Specify kernel size. Hint: int or int int'
     )
     parser.add_argument(
         '-p', '--padding',
@@ -199,7 +199,11 @@ if __name__ == "__main__":
         default='replicate',
         required=False,
         dest='pm',
-        help='Specify padding mode'
+        help=(
+            "Specify padding mode. "+
+            "Choices: 'zeros', 'reflect', 'replicate' or 'circular'. " +
+            "Default: 'replicate'"
+        )
     )
     parser.add_argument(
         '-d', '--device',
@@ -209,7 +213,7 @@ if __name__ == "__main__":
         default='cpu',
         required=False,
         dest='dev',
-        help='Specify target device'
+        help="Specify target device. Default: 'cpu'"
     )
     args = parser.parse_args()
     src_path = Path(args.import_path)
