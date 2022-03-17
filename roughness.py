@@ -142,10 +142,10 @@ def process(
             padding_mode=padding_mode
         )
         sigma = torch.squeeze(sigma, 0)
+        dst_img = sigma.detach().cpu().numpy()
+        meta['dtype'] = dst_img.dtype
 
         with rio.open(dst_path, "w", **meta) as dst:
-            dst_img = sigma.detach().cpu().numpy()
-            meta['dtype'] = dst_img.dtype
             dst_img = np.ma.masked_array(
                 dst_img, nd_mask, fill_value=meta['nodata']
             )
@@ -227,6 +227,7 @@ if __name__ == "__main__":
             color="yellow",
             text_color='grey'
         ) as spinner:
+        spinner.text_color = 'cyan'
         status = process(
             src_path=src_path,
             dst_path=dst_path,
@@ -235,7 +236,6 @@ if __name__ == "__main__":
             device=torch.device(args.dev)
         )
         if status:
-            spinner.text_color = 'cyan'
             spinner.stop_and_persist(
                 symbol=u'✅',
                 text="Process completed successfully!"
