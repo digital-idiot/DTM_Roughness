@@ -191,6 +191,7 @@ if __name__ == "__main__":
         '-k', '--kernel',
         metavar='Kernel size',
         action='store',
+        type=int,
         nargs='*',
         required=False,
         dest='ks',
@@ -226,7 +227,6 @@ if __name__ == "__main__":
     dst_path=Path(args.export_path)
     if dst_path.suffix != src_path.suffix:
         dst_path = dst_path.parent / (dst_path.stem + src_path.suffix)
-    kernel_size = tuple([int(i) for i in args.ks])
     if len(kernel_size) < 2:
         kernel_size = kernel_size * 2
 
