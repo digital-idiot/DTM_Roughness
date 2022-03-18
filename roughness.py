@@ -227,6 +227,8 @@ if __name__ == "__main__":
     if dst_path.suffix != src_path.suffix:
         dst_path = dst_path.parent / (dst_path.stem + src_path.suffix)
     kernel_size = tuple([int(i) for i in args.ks])
+    if len(kernel_size) < 2:
+        kernel_size = kernel_size * 2
 
     with Halo(
             spinner='dots',
