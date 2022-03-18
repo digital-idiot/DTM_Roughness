@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import torch
 import argparse
 import numpy as np
@@ -159,7 +161,7 @@ def process(
             dst.write(dst_img)
             return True
     except Exception as exc:
-        print(exc)
+        print("\n" + str(exc))
         return False
 
 
