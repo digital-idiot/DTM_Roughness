@@ -1,10 +1,9 @@
  
-## Efficiently Calculate **Surface Roughness** or **Localized RMSE**
+## Efficiently Calculate **Surface Roughness** or **Localized Standard Deviation**
 
 The surface roughness / localized standard deviation (<img src="https://render.githubusercontent.com/render/math?math=\sigma_{kernel}">) is derived from a specified image or DTM / DEM. Image can also multi-channel, in that case roughness will be calculated channel wise.
 
-* Math:
-<img src="https://render.githubusercontent.com/render/math?math=\sigma_i = \sqrt{\frac{1}{N}\sum_{i=1}^{N} \left( x_i - \frac{1}{N}\sum_{i=1}^{N} x_i \right)}">
+<img src="https://render.githubusercontent.com/render/math?math=\sigma_i = \sqrt{\frac{1}{N}\sum_{i=1}^{N} \left( x_i - \frac{1}{N}\sum_{i=1}^{N} x_i \right)^2}">
 
 where <img src="https://render.githubusercontent.com/render/math?math=N"> is the number of elements in the specified kernel.
 
