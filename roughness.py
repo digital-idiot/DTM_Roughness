@@ -234,7 +234,6 @@ if __name__ == "__main__":
             color="yellow",
             text_color='grey'
         ) as spinner:
-        spinner.text_color = 'cyan'
         status = process(
             src_path=src_path,
             dst_path=dst_path,
@@ -247,6 +246,7 @@ if __name__ == "__main__":
                 symbol=u'✅',
                 text="Process completed successfully!"
             )
+            spinner.text_color = 'cyan'
         else:
             spinner.stop_and_persist(
                 symbol=u'❌',
