@@ -220,6 +220,7 @@ if __name__ == "__main__":
     dst_path=Path(args.export_path)
     if dst_path.suffix != src_path.suffix:
         dst_path = dst_path.parent / (dst_path.stem + src_path.suffix)
+    kernel_size = tuple([int(i) for i in args.ks])
 
     with Halo(
             spinner='dots',
@@ -231,7 +232,7 @@ if __name__ == "__main__":
         status = process(
             src_path=src_path,
             dst_path=dst_path,
-            kernel_size=args.ks,
+            kernel_size=kernel_size,
             padding_mode=args.pm,
             device=torch.device(args.dev)
         )
