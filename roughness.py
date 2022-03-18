@@ -77,6 +77,8 @@ def convolute(
     kernel_size=(3, 3),
     padding_mode='replicate',
 ):
+    if isinstance(kernel_size, int):
+        kernel_size = (kernel_size, ) * 2
     groups = tensor.size(1)
     pad = DynamicScalePad2D(
         mode=padding_mode,
@@ -95,7 +97,11 @@ def convolute(
         padding_mode='replicate',
         device=tensor.device
     )
-    tnn.init.ones_(conv.weight)
+    w = 1 / torch.prod(
+        torch.tensor(kernel_size, dtype=torch.float, device=tensor.device)
+    ).item()
+
+    tnn.init.constant_(conv.weight, val=w)
     tensor = pad(tensor)
     tensor = conv(tensor)
     return tensor
