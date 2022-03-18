@@ -231,11 +231,11 @@ if __name__ == "__main__":
         kernel_size = kernel_size * 2
 
     with Halo(
-            spinner='dots',
-            text="Processing",
-            color="yellow",
-            text_color='grey'
-        ) as spinner:
+        spinner='dots',
+        text="Processing",
+        color="yellow",
+        text_color='grey'
+    ) as spinner:
         status = process(
             src_path=src_path,
             dst_path=dst_path,
