@@ -168,7 +168,7 @@ def process(
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description=(
-            'Calculate surface roughness / localized RMSE'
+            'Calculate surface roughness / localized standard deviation'
         )
     )
     parser.add_argument(
