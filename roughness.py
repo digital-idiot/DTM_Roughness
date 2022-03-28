@@ -74,6 +74,7 @@ class DynamicScalePad2D(tnn.Module):
             **self.kwargs
         )
 
+
 def convolute(
     tensor,
     kernel_size=(3, 3),
@@ -93,7 +94,7 @@ def convolute(
         kernel_size=kernel_size,
         stride=(1, 1),
         padding=0,
-        dilation=1,
+        dilation=(1, 1),
         groups=groups,
         bias=False,
         padding_mode='replicate',
@@ -225,12 +226,14 @@ if __name__ == "__main__":
         help="Specify target device. Default: 'cpu'"
     )
     args = parser.parse_args()
-    src_path = Path(args.import_path)
-    dst_path=Path(args.export_path)
+    srcpath = Path(args.import_path)
+    dstpath=Path(args.export_path)
     if dst_path.suffix != src_path.suffix:
         dst_path = dst_path.parent / (dst_path.stem + src_path.suffix)
-    if len(kernel_size) < 2:
-        kernel_size = kernel_size * 2
+
+    ks = args.ks
+    if len(ks) < 2:
+        ks = ks * 2
 
     with Halo(
         spinner='dots',
@@ -239,8 +242,8 @@ if __name__ == "__main__":
         text_color='grey'
     ) as spinner:
         status = process(
-            src_path=src_path,
-            dst_path=dst_path,
+            src_path=srcpath,
+            dst_path=dstpath,
             kernel_size=kernel_size,
             padding_mode=args.pm,
             device=torch.device(args.dev)

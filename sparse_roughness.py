@@ -17,8 +17,8 @@ def mean_conv(
         in_channels=1,
         out_channels=1,
         kernel_size=kernel_size,
-        stride=1,
-        dilation=1,
+        stride=(1, 1, 1),
+        dilation=(1, 1, 1),
         bias=False,
         transposed=False
     ).to(device=t.F.device)
@@ -34,7 +34,7 @@ def calc_roughness(
     src_path: Union[str, Path],
     dst_path: Union[str, Path],
     kernel_size: Union[int, Tuple[int, int], List[int]] = 3,
-    device: torch.device('cpu')
+    device: torch.device = torch.device('cpu')
 ):
     try:
         if isinstance(kernel_size, int):
@@ -161,8 +161,8 @@ if __name__ == "__main__":
         help="Specify target device. Default: 'cpu'"
     )
     args = parser.parse_args()
-    src_path = Path(args.import_path)
-    dst_path=Path(args.export_path)
+    srcpath = Path(args.import_path)
+    dstpath=Path(args.export_path)
     if args.dev.lower() == 'auto':
         if torch.cuda.is_available():
             dev = torch.device('cuda')
@@ -177,8 +177,8 @@ if __name__ == "__main__":
         text_color='grey'
     ) as spinner:
         status = calc_roughness(
-            src_path=src_path,
-            dst_path=dst_path,
+            src_path=srcpath,
+            dst_path=dstpath,
             kernel_size=args.ks,
             device=dev
         )
