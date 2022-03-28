@@ -109,6 +109,7 @@ def convolute(
     tensor = conv(tensor)
     return tensor
 
+
 def calculate_sigma(tensor, kernel_size=(3, 3), padding_mode='replicate'):
     tensor = tensor.to(dtype=torch.float)
     mu = convolute(
@@ -210,7 +211,7 @@ if __name__ == "__main__":
         required=False,
         dest='pm',
         help=(
-            "Specify padding mode. "+
+            "Specify padding mode. " +
             "Choices: 'zeros', 'reflect', 'replicate' or 'circular'. " +
             "Default: 'replicate'"
         )
@@ -225,13 +226,13 @@ if __name__ == "__main__":
         dest='dev',
         help="Specify target device. Default: 'cpu'"
     )
-    args = parser.parse_args()
-    srcpath = Path(args.import_path)
-    dstpath=Path(args.export_path)
-    if dst_path.suffix != src_path.suffix:
-        dst_path = dst_path.parent / (dst_path.stem + src_path.suffix)
+    params = parser.parse_args()
+    srcpath = Path(params.import_path)
+    dstpath=Path(params.export_path)
+    if dstpath.suffix != srcpath.suffix:
+        dstpath = dstpath.parent / (dstpath.stem + srcpath.suffix)
 
-    ks = args.ks
+    ks = params.ks
     if len(ks) < 2:
         ks = ks * 2
 
@@ -244,9 +245,9 @@ if __name__ == "__main__":
         status = process(
             src_path=srcpath,
             dst_path=dstpath,
-            kernel_size=kernel_size,
-            padding_mode=args.pm,
-            device=torch.device(args.dev)
+            kernel_size=ks,
+            padding_mode=params.pm,
+            device=torch.device(params.dev)
         )
         if status:
             spinner.stop_and_persist(

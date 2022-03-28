@@ -8,9 +8,9 @@ from typing import Tuple, List, Union
 
 
 def mean_conv(
-        t: SparseTensor,
-        kernel_size: Union[int, Tuple[int, int, int], List[int]] = 3
-    ):
+    t: SparseTensor,
+    kernel_size: Union[int, Tuple[int, int, int], List[int]] = 3
+):
     if isinstance(kernel_size, int):
         kernel_size = [kernel_size, ] * 3
     conv = Conv3d(
@@ -18,7 +18,7 @@ def mean_conv(
         out_channels=1,
         kernel_size=kernel_size,
         stride=(1, 1, 1),
-        dilation=(1, 1, 1),
+        dilation=1,
         bias=False,
         transposed=False
     ).to(device=t.F.device)
@@ -73,6 +73,7 @@ def calc_roughness(
             destination=-1
         ).reshape(-1, len(img.shape))
         indexes = indexes[np.logical_not(img.mask.ravel()), slice(None)]
+        # noinspection PyUnresolvedReferences
         features = img.compressed().reshape(-1, 1)
 
         assert indexes.shape[0] == features.shape[0]
@@ -162,7 +163,7 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
     srcpath = Path(args.import_path)
-    dstpath=Path(args.export_path)
+    dstpath = Path(args.export_path)
     if args.dev.lower() == 'auto':
         if torch.cuda.is_available():
             dev = torch.device('cuda')
