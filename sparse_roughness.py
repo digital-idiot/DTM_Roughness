@@ -72,7 +72,10 @@ def calc_roughness(
             source=0,
             destination=-1
         ).reshape(-1, len(img.shape))
+
+        # noinspection PyUnresolvedReferences
         indexes = indexes[np.logical_not(img.mask.ravel()), slice(None)]
+
         # noinspection PyUnresolvedReferences
         features = img.compressed().reshape(-1, 1)
 
@@ -162,7 +165,11 @@ if __name__ == "__main__":
         help="Specify target device. Default: 'cpu'"
     )
     args = parser.parse_args()
+
+    # noinspection SpellCheckingInspection
     srcpath = Path(args.import_path)
+
+    # noinspection SpellCheckingInspection
     dstpath = Path(args.export_path)
     if args.dev.lower() == 'auto':
         if torch.cuda.is_available():

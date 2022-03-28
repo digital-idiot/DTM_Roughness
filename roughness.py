@@ -226,9 +226,14 @@ if __name__ == "__main__":
         dest='dev',
         help="Specify target device. Default: 'cpu'"
     )
+
     params = parser.parse_args()
+
+    # noinspection SpellCheckingInspection
     srcpath = Path(params.import_path)
-    dstpath=Path(params.export_path)
+
+    # noinspection SpellCheckingInspection
+    dstpath = Path(params.export_path)
     if dstpath.suffix != srcpath.suffix:
         dstpath = dstpath.parent / (dstpath.stem + srcpath.suffix)
 
