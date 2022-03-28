@@ -86,10 +86,11 @@ def calc_roughness(
         indexes = torch.tensor(indexes, dtype=torch.int, device=device)
         features = torch.tensor(features, dtype=torch.float, device=device)
 
+        features = features ** 2.0
         st = SparseTensor(coords=indexes, feats=features)
         mu = mean_conv(t=st, kernel_size=kernel_size)
-        st.F = (st.F - mu.F) ** 2.0
-        st = mean_conv(t=st, kernel_size=kernel_size)
+        st.F = st.F ** 0.5
+
         idx_list = [
             st.C[slice(None), i].to(dtype=torch.long)
             for i in range(st.C.size(-1))
@@ -204,3 +205,4 @@ if __name__ == "__main__":
                 text="Process Failed!"
             )
             spinner.text_color = 'magenta'
+
