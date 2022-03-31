@@ -4,32 +4,51 @@ import torch
 import numpy as np
 import rasterio as rio
 from pathlib import Path
-from torchsparse.nn import Conv3d
 from torchsparse import SparseTensor
 from typing import Tuple, List, Union
+from torchsparse.nn.functional import conv3d
 
 
 def mean_conv(
-    t: SparseTensor,
+    sparse_tensor: SparseTensor,
     kernel_size: Union[int, Tuple[int, int, int], List[int]] = 3
 ):
     if isinstance(kernel_size, int):
         kernel_size = [kernel_size, ] * 3
-    conv = Conv3d(
-        in_channels=1,
-        out_channels=1,
+    kernel_weight = torch.ones(
+        size=(torch.prod(torch.tensor(kernel_size)).item(), 1, 1),
+        dtype=torch.float,
+        device=sparse_tensor.F.device
+    )
+    sparse_index = SparseTensor(
+        coords=sparse_tensor.C,
+        feats=torch.ones_like(
+            input=sparse_tensor.F,
+            dtype=sparse_tensor.F.dtype,
+            device=sparse_tensor.F.device
+        )
+    )
+    cum = conv3d(
+        input=sparse_tensor,
+        weight=kernel_weight,
         kernel_size=kernel_size,
+        bias=None,
         stride=(1, 1, 1),
-        dilation=1,
-        bias=False,
+        dilation=(1, 1, 1),
         transposed=False
-    ).to(device=t.F.device)
-    w = 1 / torch.prod(
-        torch.tensor(kernel_size, dtype=torch.float, device=t.F.device)
-    ).item()
-    torch.nn.init.constant_(conv.kernel, val=w)
-    out = conv(t)
-    return out.detach()
+    )
+    freq = conv3d(
+        input=sparse_index,
+        weight=kernel_weight,
+        kernel_size=kernel_size,
+        bias=None,
+        stride=(1, 1, 1),
+        dilation=(1, 1, 1),
+        transposed=False
+    )
+    cum.F = cum.F / freq.F
+
+    return cum.detach()
 
 
 def calc_roughness(
@@ -87,9 +106,16 @@ def calc_roughness(
         features = torch.tensor(features, dtype=torch.float, device=device)
 
         st = SparseTensor(coords=indexes, feats=features)
-        mu = mean_conv(t=st, kernel_size=kernel_size)
+
+        mu = mean_conv(
+            sparse_tensor=st,
+            kernel_size=kernel_size
+        )
         st.F = (st.F - mu.F) ** 2.0
-        st = mean_conv(t=st, kernel_size=kernel_size)
+        st = mean_conv(
+            sparse_tensor=st,
+            kernel_size=kernel_size
+        )
         idx_list = [
             st.C[slice(None), i].to(dtype=torch.long)
             for i in range(st.C.size(-1))

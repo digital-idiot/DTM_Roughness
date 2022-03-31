@@ -107,7 +107,7 @@ def convolute(
     tnn.init.constant_(conv.weight, val=w)
     tensor = pad(tensor)
     tensor = conv(tensor)
-    return tensor
+    return tensor.detach()
 
 
 def calculate_sigma(tensor, kernel_size=(3, 3), padding_mode='replicate'):
