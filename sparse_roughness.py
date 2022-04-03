@@ -4,6 +4,7 @@ import torch
 import numpy as np
 import rasterio as rio
 from pathlib import Path
+from rich.console import Console
 from torchsparse import SparseTensor
 from typing import Tuple, List, Union
 from torchsparse.nn.functional import conv3d
@@ -206,12 +207,8 @@ if __name__ == "__main__":
             dev = torch.device('cpu')
     else:
         dev = torch.device(args.dev)
-    with Halo(
-        spinner='dots',
-        text="Processing ...",
-        color="yellow",
-        text_color='grey'
-    ) as spinner:
+    console = Console()
+    with console.status("[bold orange] Processing...") as spinner:
         status = calc_roughness(
             src_path=srcpath,
             dst_path=dstpath,
@@ -219,14 +216,6 @@ if __name__ == "__main__":
             device=dev
         )
         if status:
-            spinner.stop_and_persist(
-                symbol=u'✅',
-                text="Process completed successfully!"
-            )
-            spinner.text_color = 'cyan'
+            console.log(u"✅ Process completed successfully!")
         else:
-            spinner.stop_and_persist(
-                symbol=u'❌',
-                text="Process Failed!"
-            )
-            spinner.text_color = 'magenta'
+            console.log(u"❌ Process Failed!")

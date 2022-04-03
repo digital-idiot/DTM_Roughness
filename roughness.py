@@ -3,11 +3,11 @@
 import torch
 import argparse
 import numpy as np
-from halo import Halo
 import rasterio as rio
 from pathlib import Path
 from torch import nn as tnn
 from typing import Tuple, Union
+from rich.console import Console
 from torch.nn.functional import pad as torch_pad
 
 
@@ -241,12 +241,8 @@ if __name__ == "__main__":
     if len(ks) < 2:
         ks = ks * 2
 
-    with Halo(
-        spinner='dots',
-        text="Processing",
-        color="yellow",
-        text_color='grey'
-    ) as spinner:
+    console = Console()
+    with console.status("[bold orange] Processing...") as spinner:
         status = process(
             src_path=srcpath,
             dst_path=dstpath,
@@ -255,14 +251,6 @@ if __name__ == "__main__":
             device=torch.device(params.dev)
         )
         if status:
-            spinner.stop_and_persist(
-                symbol=u'✅',
-                text="Process completed successfully!"
-            )
-            spinner.text_color = 'cyan'
+            console.log(u"✅ Process completed successfully!")
         else:
-            spinner.stop_and_persist(
-                symbol=u'❌',
-                text="Process Failed!"
-            )
-            spinner.text_color = 'magenta'
+            console.log(u"❌ Process Failed!")
